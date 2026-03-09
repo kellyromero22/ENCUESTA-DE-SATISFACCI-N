@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Citas</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #001f3f 0%, #003d7a 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 500px;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #001f3f 0%, #003d7a 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .header-logo {
+      max-width: 400px;
+      width: 100%;
+      height: auto;
+      margin-bottom: 15px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      margin: 0;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+
+    .content {
+      padding: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .required::after {
+      content: " *";
+      color: #e74c3c;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #003d7a;
+      box-shadow: 0 0 0 3px rgba(0, 61, 122, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: #003d7a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      background: #002a54;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 61, 122, 0.4);
+    }
+
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 20px;
+      margin-top: 10px;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .radio-option input[type="radio"] {
+      width: auto;
+      margin: 0;
+    }
+
+    .time-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .time-slot {
+      padding: 10px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 13px;
+    }
+
+    .time-slot:hover {
+      border-color: #003d7a;
+      background: #e6f0ff;
+    }
+
+    .time-slot.selected {
+      background: #003d7a;
+      color: white;
+      border-color: #003d7a;
+    }
+
+    .time-slot.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      background: #f5f5f5;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: auto;
+    }
+
+    .success-message {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .success-icon {
+      font-size: 60px;
+      color: #27ae60;
+      margin-bottom: 20px;
+    }
+
+    .success-message h2 {
+      color: #27ae60;
+      margin-bottom: 10px;
+    }
+
+    .success-message p {
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .error-message {
+      background: #fee;
+      border: 1px solid #fcc;
+      color: #c33;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #003d7a;
+    }
+
+    .step-indicator {
+      text-align: center;
+      padding: 15px;
+      background: #f8f9fa;
+      color: #666;
+      font-size: 13px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="data:image/jpeg;base64,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...< truncated 15496 characters >...QLvb8srMOxk44cldmpitNomoYZGyVlVuncw5bG36IPM8c46qjTLyRJ7tpNgf+fq//wAc+8LNlanYSnnZUVM743MjdBpa524OJI4dVQfi+u1lvkc+c/zZVs/5hPa427V+MKbR6Xatx45C09/LDtvQBuMgxh3+I/DCrLXHT2iUV9wex88e+GmY4FxdyLsbmge1cbQK24bQwV8kT3B04e9+nDQAevcrOpov6kbTG1/jyp8oZWGXI1dm5ob6I4ZCr7saI0VF5CHhuH6xIQXas88d2FY7T2q4VF7qJ4KZ8kbyC1zcEHzQoUVlqoqWpqq2EwxxREtDiAXOO4bvXlLvd6Sa1FSiIubYiIgIiICIiAiIgL60Fxw0Ek8gvis9lv2govtPgrJulQOxl/mn/wCErgQQcEYK1u0G0NxobvNSwOi7NmnGpmTvAK50U0O0ttqo6qmijq4G6mysGOuPdvC1xm9Ss8r6xyIu51NUtj7R1PKGfSLDj2rDTpRF2w09RMC6KCWQDiWsJQdSL65rmuLXAgjiCF9EchjMgY7QOLsbkHFfQCTgcUAJIABJPABc2MeydjXtc06huIwg+1FPPTPDKiGSJxGQHtIJC6lpPwg/raH7AfxFZ+GCaYkQwySEcdDSfcrZq6SXc260XKSN8byyRjmOHEOGCvgBJwBkqK+LnFHJK7TFG97sZw0ZK5yU1TGzXJTysb9JzCAp+zd0mtdTK+Gm8o7RmC0ZBGDxyFZO+0qqX1oLnBrQSTuAHNdlVK6eplme0NdI8uIAwASVZbNyijmfW+Q1FTIxpEOhuWh3UlJN0qrljkidpljew4zhwwuC76+oqKurknqnOdK4+dnl3dy6tD9GvQ7QDjVjcorii7RTVBi7UQSmP6Wg49q6kBfWtc5wa0FxPAAL4tbHKzZ/Z2lqqaFj6ur3mRwzgYz7sbvFak2lumVlhlix2kT2Z4amkLgtHBtXUvDorlTQ1cLgQW6cf6LOuOXEgAZPAclLJ9E39viLu8lquz7XyabRx1aDj2rpUURczFKJBGY36zwbpOfYvs0M0JAmikjJ4a2kZ9qD5FFJK4tije8gZIaM7lwVvs1dZ7XNM6Gl8o7RoBAyCMcOChUrTWXWNrmDM0w1NA3b3b1dJtFRWu1NPHBfaiKnhEcTdOlrRuHmhVbGue4NY0uceAAyUs1dEu3xF2zU88IBmgljB4a2EZ9q4MY97tLGucegGVFcVzbFI6N0jY3ljfScG7h4lfYoJ5gTFDJJp46Wk4VtbbzUUtjqKBlGJGP1Zk34bkYOeqsn6lUqL6ASQAMkrtlpqmJmuSnlY36TmEBRXSiIgIiICIiAiIgIiICIiAiIgIiIC7W1E7WaGzytb0DzhWNhtdNdZ/J21UkUwZqwYgWnwOV1yUtpZI5jrhU5aSD/AMMP/JXV9TcVxJJyTkr4p9dSUkEdNPBVvnhmLg49npc0jGRjPephs9H+Jfxr5bMYs6dHYjVnOMelhONNqiOaaL9HK9n1XELg9znu1PcXE8ycrlL2YeeyLyzkXDBXBRX3J6r4pVqoZrjWspYMBzt5ceDQOJK7pI7SyUxCareAcGUNbg94bxx61dJtXpkqZdaNlHNG2KobURyRiRsgbgEHPL1KPSwvqKmOCMEvkeGgd5KaVwyepXxXO0tnjtnYSU8zpoZQRqOOI8FURaDIO0LgzmWjJSzV0ku3Ffcnqrqps9HBaIrka6V0Upw1ohGrO/8AtdxUChgo6isEElTLC17g1jzGDx679ycabQ0VrfbZTWuc0xqZZZtIcPzQDd/flV9MIHPxUPkY3kWMDj95CWaujb5282AO2k3cPOK4Pc57tTnFx6k5Vje6Clt0xp2Vb55gAXDs9IbnkTnipWzljZdKaaSSZ0RB0wgY852Mn2bleNt0bmtqNfXOc7GpxOBgZPAL69rmPcxwIc04IPIqysNvpLnUtpX1M0UzgSMRgtOO/PRSTfRbpWAkHIOCux9RO9uh80jm9C4kKVVQ2+nq5adzqp3ZvLC4Bu/Bwu6ltcFeC23VodMBnsJm6HHwOSCmqbVSLnNFJDK6KVjmSMOHNcMEFTIba4Uba2slFNTu3R5GXyfVb07zgJpdoOSmT1Kmxi0F2l7q1g+mA0/d/qu2vs8sFIK6mmZV0Z/lGDBb3OHJNJtWL7k8Mq5sNpo7p2jBVTRyRs1ub2YwfA5UKJlskeGPmqYc/vlgcB4gEFONNoSKfeLXUWyVglLJI5BqjlYctcFAUs0oiIgIiICIiAiIgIiICs9l/wBoKL7T4KsVnsv+0FF9p8FcfYl8X17sLrheZZWV9LG5+MRud54wByXRNNR7OUNTRU8rp7hMNL3acBgx/qq/auR8W008sbix7SwtcOIOkKzrI2bS2YVkDQLhTDEjB+8P97x6wun3desfU26NkqNrKCpuxpjUzRebBHpzl3XHrH3rlHcdqm1PayU1TJHnzojB5pHTguWzD5KnZ6ut9NI6OrYe0j0uwTw+WPWqU1t4E3YmqrhJnGjW7OfBN6kXW7VltDbaeLaGlaxnZQVZY4t4acnBHcu7aa7V9vuRoaF/klPC1oY1jQM7s5VJXsuArI4ri+ZsuBpMziS0Hmtdd2V7XxRx2qC6RRxgCeUBzieaTvei9a2i3K6VR2Vp64iJlRO4xvJjB1DeMjPDgotGT+QFUM7u2+LVX7QyXedzH3CmfBEzdGwR6WN8FZWpjqnYitghBfI2TJaOOPNPuBTe6a1FBaf1rSfbs/iCtttCTtNv+jH7lX2GkqKi7U4hhc7RK1zzjc0A5JKn7Z/tL/dj9yzP5X/07fwg/raH7AfxFR37S1rII4KCOKijY0AiNoJceu9TdtYhPtBRwl2kSMa0npl5CXyt/EVUKC20cMIDATM+MOe/PeVq73ak8jlc5DddkRcKpjfKoJNOsNwSMgfEexddiZDa9n5b2+JslQ52iHUNzd+Pfn2KXVzV0+xNRNcNXaueC3U0N83U3G72qPRMdctiX0tONU9PJqLBxIyT7ifYr9//AIn0gRbUXZsxfLKyZh4xPYNJHTcpWwTy+/TPwGl0TjhowB5w4Kgp6WoqKgQQwvfKTjSBvV/sGx8V+mjkaWvbC4OaeIOoLGNts21lJIi7O2+O47QPjmGYoy57x1wdw9pXbctprgKt8dDI2np43FsbGsG8DruXPY+pjh2imikIAmDmNPfnIH3KoutFPRV8sEsbhhx0nG5w5EJvWPR7e19XdnfNm33J0bGVtMcSOaMaxu+Bz6iuVgkjh2Pq5ZYWzsjm1dm70SfNxn1rjSsdbNi6o1ILJKt2I2Hcd4A92SuFr/Ya4faf+K397/8AjLqtu01zdcoWzSNfDI8MMYYAACcblF2wpYqS+SshaGse0P0jgCeP3qvtv6xpvtW+8K429/X3/Sb8VjduPbXlZ9aW03qgltjLZeIS6Jm5kgGcDlw3gjqFmlZV9kuNFGySWAuY9oOqPzg3PI9CpjbPFultUbN0lXC6ey1zZsfybjn1Z5esKktVWLbXGaSkjncwFoZJ+67r4hW+xFJVtuZqnMfFTsY4Pc4YB3cPj6lztFNR3C43W4yQ+UMhc6SOH6ecke771rW9WM7+q6qDaa7SXGLtZBJE94a6MMGME8ua6dq6WKk2iLYWhrH6X6RwBPFd1De7vV10VPRxxRMLx+bhhAAbnf8Acvu2+Pyjjxw7NnvKXvEnqx2uuktur2+SRsZUSxgunIy4NyQAM8F12islv1nr6W4aZXxM1sk0gEHBx94UP8IP61g+xH8RXPYX9DdPsR7nLW7z0mv+duP4PiRc6jBx+Y/7gomy9dUU12jponNEc8zRJloJxnkeSl/g+/WdR9h/3BVdh3bQUmf58e9ZnkX7q52lvlwpbpU0cMkYhAAwYwTgtGd/rVVa71JbaN8VLTQid7s9uRlwHRdu18MrtoaktieQWtdubyDRv8FNgjgtOzdPc46SKpqZ3Y1yN1Nj48vUl3cqdaSNmrjVXmSe3XPFRFJGSHFoGDu6eP3KDsS0x7SFgO9rHjKtNkLjdbhXudUHNK1h9GMNaHZGBuHiq3Y/9qpPCRX8T9cq7aCa31MlFa44o4InuaS5uXPdneT61ysRP5G3bed7j7gqG6frOq+2f/EVfWL9jbr9Y+4KS21bOlTZrobYJXx0sMkzwAyR/GPwVzs7fLhW3NtJWubUQT5a5rmDA3E8l0WSmpqbZ+ovD6VlXOx+ljHjLWcN5HrUnZy7Xe4XWNhDRTNyZRHEGtaMdfHCuO5rsve2evNOykutTTx+hHIQ3w5KIrLab9f1v2pVaud9angiIooiIgIiICIiAiIgIiICIiDQbA/r7/ou+Ch1VmurqmVzaCcgvJB096mbA/r7/ou+CpaxzvK5t5/SO59631xjP27bnSzUMwpJnHU1rXuaf3XOAJHu9iu//t9/+x8VRVD6iraal41CJjGOdnuwPXuV7/8Ab7/9j4pj9l+mZRFzlifEQ2RuklocB3HgsNJ+zdwbbLoyokaXRkFj8cQDzVleNnzI019oe2ppn5doaclvh18OKz0UUkjZHMbkRt1O7hkDP3hSrVc6u2z9pTSEAnzmH0XeIWpZrVZs+4huLtzXE+buAPJW2zcb2Oqbg1jnmliPZgAnMjtzfZvPqUvbBlPLHQ3OFgjdVsJe3qRjf9+FHqKie12ijpqaZ8M0+aiUscQcHcwewE+tXWqb3FhRQzV+yVRRzRSNmpXdpFqaRkbzuz/e+5ZVX+zV5q23iFlXVzSwynsyJHkgZ4Hf34Vff6PyC7T04GGB2pn1TvCZdzZOrpbXP9hrf9t/5rNLS3P9hrf9t/5rNKZGLTX7/wCT2co7q3fLD+am+ft/iVVs/AyW4tlmGYKdpnl8G78es4HrVrskcyVdkqxpbUx5AP7rse/G/wBSgzxPtlllhkGmoq5iwjpGw7/a73LV7/6Sfisq55KqqlqJDl8ry4+JK0L3VNsrLZDFBM5lI0PmLWEgufvd92B6lU7PwMmubHzD8zADNL9Vu/HrOB60mvN0kmfIK6pZqcTpbIQBnkFJddre0vbOjFNeXSsH5uoHaN3c+f37/WvmxX7QwfVf/CVOq3Ou+x7KlxL6mieQ8neS3r7MexQdiv2hg+q/+Eq/+pU/8oF4/W1Z9u/+IqPBLJBMyaJxa9jg5pHIhSLx+tqz7d/8RXXQ00tZVx00DS58jsDu71j7a+mtvtDDcblaKjSG+VYEuOYADvdkKl2yndLfJIeEcDRGxo4AYVnd7tT01/t8MTtUFD5j3DqRg+wKDttSOiuYrWedBUtDmvHDON/wPrXTPy6Zx+lAtHsLUEV8tDJ50NRGcsPDI/0ys4r7YtjY66a4THTT0sRL3HqdwHjxWMP6ay8T9lacUt/udM05Ecbmjw1DCybWue8Na0ucTgADJK1Ox87qq93GpcMGSNz8dMuCqbXeqmhq2zaIpG8HN7NoJHcQNxWrrUSb3VltVKyGz262OcHVMLQ6QA50ebjB7/ksytHe7VBVUv43s/nwu3yxDiw893w+Czizn6Y+CIiy0IiICIiAiIgIiIC7qKplpKqOphIEkZy3IyMrpRBIr6uauq31NQWmR+M4GBuGFytlfVW6o7elk0OIwcjII7woqK7vppKNfUivdXRvEM5dqJjGkZ57lZnaq76Ma4Q7GNfZDKokSZWJqLO1zMrb9BJdZTKx7/PMh3HoD3ZwrW9QbSMuUrqfynsM4i7AnQGchgcNyy6lwXK4QM0Q1tQxo4ASHAVmXXaWNMyavpdna38eyE9q3RBHIQXk4/8AR9SzVruVXbZjLSS6S7c5pGQ7xCjzzTTv1zyvld1e4krrS5b8WRbV20N0q2Bj5WxsyCWxt0hxHXqodwr6ivrPK6gtMuAMhuBu7lFRS201ImXS5VVyqGz1Lml7W6QWtxuzn4qczaa6CFsbnQyFowHviBcPWqVE5U1E+S7V8tNUU805kZUODpC4ZOR0PLguigraqgn7almdG/gccCOhHNR0TdXS7n2ou8kZYJY4ieLo4wHe1QLbcqq31TqmneO1c0tJeNWcnPPwUNE5VNRyc9xkMmcOJzkdVcwbT3aKIMMscuODpGAn2qkRJbPCyVKuNwq7hMJauYyEeiOAb4BcoblVQ22W3sczsJTlwLRnO7n6goaJumnOGR0UrJWY1McHDPULvudfUXGp8oqi0yaQ3zW4GAoqKbUVpbb/AHOgjEUM+qMcGSDUB4c1VorLZ4WbWty2gudfCYZpgyM+k2NukHx5qJba+qt1R21LJocRggjIcOhCiom7vaai1rtoLlVROiL44WO9MQsDdXieKiXCvqa6qbU1Dmuka0NBDcbgoqJbaakTLrcam5TtmqnNL2t0jS3G7OfivttuVVb2zNpnMAmbpfqbndv+ahIm7vZpMtdxqrbM+WlLQ57dJ1NzuzlRWvc2QSNcWuByCORXFFNqupdp7vJTmEyxjI0l4jGohdFsvdfb4DBC9j4Sc6JGagPBViLXKpqLU7QXQ1kdT27QYs6GBgDBnj5vBRaC4VNDWmspy0SnOSW5G/juURFN01HOaR00z5X41PcXHHUlSaa5VVPb56GJzBDOcvBbk+31KGibVPtV2rbZrFNI3Q/0mPblpXdUX+5TSRO7VkbY3h7WRsDW5HMjn61VInK+JqO6sqJauqkqZiDJI7U7AwMrpRFFEREBERAREQEREBERAREQEREFtZ7vDa5TNBQh0pbpLnyn14GFwlr7dLK6R1nZqcSTid4GVWIryqaWVRcqd9E2jht7IIu1Ej9MhLn4BGCT4qQy9wNtYtptjHU4OrBldknOc5CpUTlTUWcVfbo5GvFmicWnIDpnkesKBUzSVE755XanvcXOPeutEtNJdqrXUFSZhEyYOY5jmP8ARIIxvXYJ7WZO0NBN9mKjzPdn71ARNmlhVXLyurbNV07XxRtDI4WOLGsA4AJd7hFcJTOaQQykAZbIS0ADA3eCr0TdNO+klhifqlgdKQQRiTTj7lY3e8w3SRklTb2iRowHMlIJHQ7lTom74aXb75BJborfJa43QRHLR2rgc79+R4ldEFxoIJBLFZ4tbd7S+VzgDyODxVWivKmokUtXNBXsrQ4ulbJrJJ9I53+1SL9cnXSvNSWGNgaGsZnOAP8AXKr0U3daNLOiuVPTUU1MKAP7dobI8ykEgb93Teq+UsdITGwsbyaXZx61wRNrpc2y9RW+GaGG3teycYkEkpORgjp3lddsutNb6vyqnt4MgBDdcxIbn1KqROVTUT6mso6ipknfQuDpHFzgJjjJ48l9bdJIYnxUMMdIHjDnMyXuHTUd4HhhV6JumhWVDeJ4KU0c8cdXSH+Sl5eB4hVqJLpdbTXy2wu1NpKlv9jtwR7dOV8q6+WanbSxsbBTNOREzgT1J4k+Khom00t7NeY7WHOhoWvke0Ne58h3juHJV1XJBI/VBTmEb8t16h6l0om74aTbTc6u2TmWmeMH02O3td4hc7jWUNWXStt5ppnbyY5fMJ+qR7iq9E3daNCIiiiIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIg//9k=" alt="Logos" class="header-logo">
+      <h1 id="headerTitle">Superintendencia de Regulación Sanitaria</h1>
+    </div>
+    
+    <div class="step-indicator" id="stepIndicator">Paso 1 de 2</div>
+    
+    <div class="content">
+      <!-- Paso 1: Información básica -->
+      <form id="step1" class="step-form">
+        <div class="form-group">
+          <label for="nombreCompleto" class="required">Nombre completo</label>
+          <input type="text" id="nombreCompleto" required>
+        </div>
+
+        <div class="form-group">
+          <label for="correo" class="required">Correo Electrónico</label>
+          <input type="email" id="correo" required>
+        </div>
+
+        <div class="form-group">
+          <label for="tipoDocumento1" class="required">Tipo de Documento</label>
+          <select id="tipoDocumento1" required>
+            <option value="">Seleccione...</option>
+            <option value="DUI">DUI</option>
+            <option value="Pasaporte">Pasaporte</option>
+            <option value="Carnet de Residente">Carnet de Residente</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="numeroDocumento1" class="required">Número de Documento</label>
+          <input type="text" id="numeroDocumento1" required>
+        </div>
+
+        <div class="form-group">
+          <label for="telefono" class="required">Teléfono</label>
+          <input type="tel" id="telefono" required>
+        </div>
+
+        <button type="submit" class="btn">CONTINUAR</button>
+      </form>
+
+      <!-- Paso 2: Detalles de la cita -->
+      <form id="step2" class="step-form hidden">
+        <div class="form-group">
+          <label for="tipoDocumento2" class="required">Tipo de Documento de Identidad</label>
+          <input type="text" id="tipoDocumento2" readonly style="background: #f5f5f5;">
+        </div>
+
+        <div class="form-group">
+          <label for="numeroDocumento2" class="required">Número</label>
+          <input type="text" id="numeroDocumento2" readonly style="background: #f5f5f5;">
+        </div>
+
+        <div class="form-group">
+          <label for="sede" class="required">Sede</label>
+          <select id="sede" required>
+            <option value="">Opciones</option>
+            <option value="Central">Central</option>
+            <option value="Santa Ana">Santa Ana</option>
+            <option value="San Miguel">San Miguel</option>
+            <option value="San Salvador">San Salvador</option>
+            <option value="San Vicente">San Vicente</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="area" class="required">Área</label>
+          <select id="area" required>
+            <option value="">Opciones</option>
+            <option value="Subsanación">Subsanación</option>
+            <option value="Farmacéutico">Farmacéutico</option>
+            <option value="Seguimiento">Seguimiento</option>
+            <option value="Otra área 1">Otra área 1</option>
+            <option value="Otra área 2">Otra área 2</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="numeroPresentacion">Número de Presentación/Transacción</label>
+          <input type="text" id="numeroPresentacion" placeholder="No es obligatorio">
+        </div>
+
+        <div class="form-group">
+          <label for="descripcion" class="required">Descripción</label>
+          <textarea id="descripcion" required placeholder="Breve descripción del motivo de la cita"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="required">Tipo de reunión</label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" id="presencial" name="tipoReunion" value="Presencial" required>
+              <label for="presencial" style="margin: 0;">Presencial</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" id="virtual" name="tipoReunion" value="Virtual" required>
+              <label for="virtual" style="margin: 0;">Virtual</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group hidden" id="participantesPresencialesGroup">
+          <label for="participantesPresenciales">Nombre de otros participantes</label>
+          <textarea id="participantesPresenciales" placeholder="Nombres de los participantes presenciales"></textarea>
+        </div>
+
+        <div class="form-group hidden" id="participantesVirtualesGroup">
+          <label for="participantesVirtuales">Correos de otros participantes</label>
+          <textarea id="participantesVirtuales" placeholder="Correos separados por comas"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="fechaCita" class="required">Fecha de cita</label>
+          <input type="date" id="fechaCita" required>
+          <div id="dateError" class="error-message hidden" style="margin-top: 10px;"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="required">Hora de cita</label>
+          <div class="time-grid" id="timeGrid"></div>
+          <input type="hidden" id="horaCita" required>
+        </div>
+
+        <div class="form-group">
+          <div class="checkbox-group">
+            <input type="checkbox" id="terminos" required>
+            <label for="terminos" style="margin: 0;">Acepto los términos y condiciones</label>
+          </div>
+        </div>
+
+        <div id="errorMessage" class="error-message hidden"></div>
+
+        <button type="button" class="btn" onclick="goBack()" style="background: #95a5a6; margin-top: 0;">VOLVER</button>
+        <button type="submit" class="btn">AGENDAR CITA</button>
+      </form>
+
+      <!-- Mensaje de éxito -->
+      <div id="successScreen" class="hidden">
+        <div class="success-message">
+          <div class="success-icon">✓</div>
+          <h2>¡Cita agendada exitosamente!</h2>
+          <p>Recibirás un correo de confirmación con los detalles de tu cita.</p>
+          <button class="btn" onclick="resetForm()">Agendar otra cita</button>
+        </div>
+      </div>
+
+      <!-- Pantalla de carga -->
+      <div id="loadingScreen" class="hidden">
+        <div class="loading">
+          <p>Procesando tu cita...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Variables globales
+    let userData = {};
+    let bookedSlots = [];
+
+    // Generar slots de tiempo
+    function generateTimeSlots() {
+      const grid = document.getElementById('timeGrid');
+      grid.innerHTML = '';
+      
+      const startHour = 8;
+      const endHour = 17;
+      
+      for (let hour = startHour; hour < endHour; hour++) {
+        for (let minute = 0; minute < 60; minute += 30) {
+          const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+          const displayTime = `${hour > 12 ? hour - 12 : hour}:${minute.toString().padStart(2, '0')} ${hour >= 12 ? 'PM' : 'AM'}`;
+          
+          const slot = document.createElement('div');
+          slot.className = 'time-slot';
+          slot.textContent = displayTime;
+          slot.dataset.time = timeString;
+          slot.onclick = () => selectTimeSlot(slot);
+          
+          grid.appendChild(slot);
+        }
+      }
+    }
+
+    // Seleccionar slot de tiempo
+    function selectTimeSlot(slot) {
+      if (slot.classList.contains('disabled')) return;
+      
+      document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+      slot.classList.add('selected');
+      document.getElementById('horaCita').value = slot.dataset.time;
+    }
+
+    // Configurar fecha mínima y deshabilitar fines de semana
+    function setupDatePicker() {
+      const fechaInput = document.getElementById('fechaCita');
+      const sedeSelect = document.getElementById('sede');
+      const dateError = document.getElementById('dateError');
+      const today = new Date();
+      today.setDate(today.getDate() + 1); // Mínimo mañana
+      fechaInput.min = today.toISOString().split('T')[0];
+      
+      fechaInput.addEventListener('change', function() {
+        const selectedDate = new Date(this.value + 'T00:00:00');
+        const dayOfWeek = selectedDate.getDay();
+        
+        dateError.classList.add('hidden');
+        
+        if (dayOfWeek === 0 || dayOfWeek === 6) {
+          dateError.textContent = 'No se pueden agendar citas los fines de semana. Por favor selecciona un día entre lunes y viernes.';
+          dateError.classList.remove('hidden');
+          this.value = '';
+          // Limpiar slots de tiempo
+          document.querySelectorAll('.time-slot').forEach(slot => {
+            slot.classList.remove('selected', 'disabled');
+          });
+          document.getElementById('horaCita').value = '';
+          return;
+        }
+        
+        // Cargar las horas ocupadas para esa fecha
+        loadBookedSlots(this.value);
+      });
+      
+      // También recargar cuando cambie la sede
+      sedeSelect.addEventListener('change', function() {
+        const fecha = fechaInput.value;
+        if (fecha) {
+          loadBookedSlots(fecha);
+        }
+      });
+    }
+
+    // Cargar slots ocupados (se debe implementar en el backend)
+    function loadBookedSlots(date) {
+      const sede = document.getElementById('sede').value;
+      
+      if (!sede) {
+        // Si no hay sede seleccionada, no cargar slots
+        return;
+      }
+      
+      google.script.run
+        .withSuccessHandler(function(slots) {
+          bookedSlots = slots || [];
+          updateTimeSlots();
+        })
+        .withFailureHandler(function(error) {
+          console.error('Error loading booked slots:', error);
+          bookedSlots = [];
+          updateTimeSlots();
+        })
+        .getBookedSlots(date, sede);
+    }
+
+    // Actualizar disponibilidad de slots
+    function updateTimeSlots() {
+      document.querySelectorAll('.time-slot').forEach(slot => {
+        const time = slot.dataset.time;
+        if (bookedSlots.includes(time)) {
+          slot.classList.add('disabled');
+        } else {
+          slot.classList.remove('disabled');
+        }
+      });
+    }
+
+    // Manejo del tipo de reunión
+    document.querySelectorAll('input[name="tipoReunion"]').forEach(radio => {
+      radio.addEventListener('change', function() {
+        const presencialesGroup = document.getElementById('participantesPresencialesGroup');
+        const virtualesGroup = document.getElementById('participantesVirtualesGroup');
+        
+        if (this.value === 'Presencial') {
+          presencialesGroup.classList.remove('hidden');
+          virtualesGroup.classList.add('hidden');
+          document.getElementById('participantesVirtuales').value = '';
+        } else {
+          virtualesGroup.classList.remove('hidden');
+          presencialesGroup.classList.add('hidden');
+          document.getElementById('participantesPresenciales').value = '';
+        }
+      });
+    });
+
+    // Paso 1: Submit
+    document.getElementById('step1').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      userData = {
+        nombreCompleto: document.getElementById('nombreCompleto').value,
+        correo: document.getElementById('correo').value,
+        tipoDocumento: document.getElementById('tipoDocumento1').value,
+        numeroDocumento: document.getElementById('numeroDocumento1').value,
+        telefono: document.getElementById('telefono').value
+      };
+      
+      // Llenar datos en paso 2
+      document.getElementById('tipoDocumento2').value = userData.tipoDocumento;
+      document.getElementById('numeroDocumento2').value = userData.numeroDocumento;
+      
+      // Cambiar a paso 2
+      document.getElementById('step1').classList.add('hidden');
+      document.getElementById('step2').classList.remove('hidden');
+      document.getElementById('headerTitle').textContent = 'Agenda tu Cita';
+      document.getElementById('stepIndicator').textContent = 'Paso 2 de 2';
+    });
+
+    // Volver al paso 1
+    function goBack() {
+      document.getElementById('step2').classList.add('hidden');
+      document.getElementById('step1').classList.remove('hidden');
+      document.getElementById('headerTitle').textContent = 'Superintendencia de Regulación Sanitaria';
+      document.getElementById('stepIndicator').textContent = 'Paso 1 de 2';
+    }
+
+    // Paso 2: Submit
+    document.getElementById('step2').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.classList.add('hidden');
+      
+      // Validar hora seleccionada
+      if (!document.getElementById('horaCita').value) {
+        errorDiv.textContent = 'Por favor selecciona una hora para tu cita';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+      
+      const citaData = {
+        ...userData,
+        sede: document.getElementById('sede').value,
+        area: document.getElementById('area').value,
+        numeroPresentacion: document.getElementById('numeroPresentacion').value,
+        descripcion: document.getElementById('descripcion').value,
+        tipoReunion: document.querySelector('input[name="tipoReunion"]:checked').value,
+        participantes: document.querySelector('input[name="tipoReunion"]:checked').value === 'Presencial' 
+          ? document.getElementById('participantesPresenciales').value 
+          : document.getElementById('participantesVirtuales').value,
+        fechaCita: document.getElementById('fechaCita').value,
+        horaCita: document.getElementById('horaCita').value,
+        timestamp: new Date().toISOString()
+      };
+      
+      // Mostrar pantalla de carga
+      document.getElementById('step2').classList.add('hidden');
+      document.getElementById('loadingScreen').classList.remove('hidden');
+      
+      // Enviar datos al backend
+      google.script.run
+        .withSuccessHandler(onSuccess)
+        .withFailureHandler(onFailure)
+        .saveCita(citaData);
+    });
+
+    function onSuccess(result) {
+      document.getElementById('loadingScreen').classList.add('hidden');
+      document.getElementById('successScreen').classList.remove('hidden');
+    }
+
+    function onFailure(error) {
+      document.getElementById('loadingScreen').classList.add('hidden');
+      document.getElementById('step2').classList.remove('hidden');
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.textContent = 'Error al guardar la cita: ' + error.message;
+      errorDiv.classList.remove('hidden');
+    }
+
+    function resetForm() {
+      document.getElementById('step1').reset();
+      document.getElementById('step2').reset();
+      document.getElementById('successScreen').classList.add('hidden');
+      document.getElementById('step1').classList.remove('hidden');
+      document.getElementById('headerTitle').textContent = 'Superintendencia de Regulación Sanitaria';
+      document.getElementById('stepIndicator').textContent = 'Paso 1 de 2';
+      userData = {};
+    }
+
+    // Inicialización
+    generateTimeSlots();
+    setupDatePicker();
+  </script>
+</body>
+</html>
